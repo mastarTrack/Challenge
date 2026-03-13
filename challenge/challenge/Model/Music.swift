@@ -15,6 +15,6 @@ struct Music: Codable {
     let trackName: String?
     let artistName: String?
     let collectionName: String?
-    let artwork60: String? // 앨범커버
-    let artwork100: String?
+    let artworkUrl60: String? // 앨범커버
+    let artworkUrl100: String?
 }
