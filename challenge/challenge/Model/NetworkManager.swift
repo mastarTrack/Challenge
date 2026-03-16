@@ -23,8 +23,8 @@ class NetworkManager {
         return Single.create { observer in
             let request = URLRequest(url: url)
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    observer(.failure(NetworkError.responseError))
+                if error != nil {
+                    observer(.failure(NetworkError.requestError))
                     return
                 }
                 guard let response = response as? HTTPURLResponse,

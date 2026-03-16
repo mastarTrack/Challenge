@@ -16,6 +16,32 @@ enum Section: Int, CaseIterable {
     case autumn
     case winter
     
+    var title: String {
+        switch self {
+        case .spring:
+            return "봄 Best"
+        case .summer:
+            return "여름"
+        case .autumn:
+            return "가을"
+        case .winter:
+            return "겨울"
+        }
+    }
+    
+    var subTitle: String {
+        switch self {
+        case .spring:
+            return "봄에 어울리는 음악 Best 5"
+        case .summer:
+            return "여름에 어울리는 음악"
+        case .autumn:
+            return "가을에 어울리는 음악"
+        case .winter:
+            return "겨울에 어울리는 음악"
+        }
+    }
+    
     var layout: LayoutType {
         switch self {
         case .spring:
@@ -61,7 +87,7 @@ extension HomeView {
         
         collectionView.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(searchBar.snp.bottom).offset(10)
+            $0.top.equalTo(searchBar.snp.bottom).offset(20)
             $0.bottom.equalToSuperview()
         }
     }
@@ -87,6 +113,9 @@ extension HomeView {
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10)
         section.orthogonalScrollingBehavior = .continuous
         
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(60))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        section.boundarySupplementaryItems = [header]
         return section
     }
     
@@ -101,6 +130,10 @@ extension HomeView {
         section.interGroupSpacing = 10
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10)
         section.orthogonalScrollingBehavior = .continuous
+        
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(60))
+        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        section.boundarySupplementaryItems = [header]
         
         return section
     }

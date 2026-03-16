@@ -31,13 +31,13 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
     private func bind() {
         Observable.merge(
-            viewModel.springList.map { _ in () },
-            viewModel.summerList.map { _ in () },
-            viewModel.autumnList.map { _ in () },
-            viewModel.winterList.map { _ in () }
+            viewModel.springList.asObservable(),
+            viewModel.summerList.asObservable(),
+            viewModel.autumnList.asObservable(),
+            viewModel.winterList.asObservable()
         )
         .observe(on: MainScheduler.instance)
-        .subscribe(onNext: { [weak self] in
+        .subscribe(onNext: { [weak self] _ in
             self?.homeView.collectionView.reloadData()
         }).disposed(by: disposeBag)
     }
@@ -49,6 +49,7 @@ extension HomeViewController {
         homeView.collectionView.dataSource = self
         homeView.collectionView.register(CardCell.self, forCellWithReuseIdentifier: CardCell.id)
         homeView.collectionView.register(ListCell.self, forCellWithReuseIdentifier: ListCell.id)
+        homeView.collectionView.register(SectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeaderView.id)
     }
 }
 
@@ -57,6 +58,13 @@ extension HomeViewController: UICollectionViewDelegate {
 }
 
 extension HomeViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeaderView.id, for: indexPath) as? SectionHeaderView else { return UICollectionReusableView() }
+        guard let section = Section(rawValue: indexPath.section) else { return UICollectionReusableView() }
+        header.config(section: section)
+        return header
+    }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         Section.allCases.count
