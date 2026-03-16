@@ -11,7 +11,7 @@ struct MusicResponse: Codable {
     let results: [Music]
 }
 
-struct Music: Codable {
+struct Music: Codable, Hashable {
     let trackName: String?
     let artistName: String?
     let collectionName: String?
