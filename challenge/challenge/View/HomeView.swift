@@ -46,6 +46,7 @@ class HomeView: UIView {
 
 extension HomeView {
     private func setAttributes() {
+        self.backgroundColor = .systemBackground
         searchBar.placeholder = "영화, 팟캐스트"
     }
     private func setLayout() {
