@@ -5,6 +5,8 @@
 //  Created by 손영빈 on 3/16/26.
 //
 
+//TODO: 1. Section Header 추가, 2. Layout 세부 조정
+
 import UIKit
 import SnapKit
 
@@ -82,7 +84,7 @@ extension HomeView {
         
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 10
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10)
         section.orthogonalScrollingBehavior = .continuous
         
         return section
@@ -96,7 +98,8 @@ extension HomeView {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 3)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+        section.interGroupSpacing = 10
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10)
         section.orthogonalScrollingBehavior = .continuous
         
         return section
