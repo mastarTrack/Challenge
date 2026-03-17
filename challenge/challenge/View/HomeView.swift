@@ -11,7 +11,6 @@ import UIKit
 import SnapKit
 
 class HomeView: UIView {
-    private let searchBar = UISearchBar()
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     
     override init(frame: CGRect) {
@@ -28,20 +27,11 @@ class HomeView: UIView {
 extension HomeView {
     private func setAttributes() {
         self.backgroundColor = .systemBackground
-        searchBar.placeholder = "영화, 팟캐스트"
     }
     private func setLayout() {
-        [searchBar, collectionView].forEach { addSubview($0) }
-        searchBar.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(safeAreaLayoutGuide)
-            $0.height.equalTo(50)
-        }
-        
+        addSubview(collectionView)
         collectionView.snp.makeConstraints {
-            $0.leading.trailing.equalToSuperview()
-            $0.top.equalTo(searchBar.snp.bottom).offset(20)
-            $0.bottom.equalToSuperview()
+            $0.edges.equalToSuperview()
         }
     }
 }

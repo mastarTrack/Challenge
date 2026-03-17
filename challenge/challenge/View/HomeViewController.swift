@@ -29,6 +29,7 @@ class HomeViewController: UIViewController {
         setDelegate()
         configDataSource()
         bind()
+        configSearchController()
     }
 }
 
@@ -116,5 +117,15 @@ extension HomeViewController {
         let alert = UIAlertController(title: "오류", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .cancel))
         present(alert, animated: true)
+    }
+}
+
+extension HomeViewController {
+    private func configSearchController() {
+        let searchVC = SearchViewController()
+        let searchController = UISearchController(searchResultsController: searchVC)
+        searchController.searchBar.placeholder = "음악, 팟캐스트"
+        navigationItem.searchController = searchController
+        
     }
 }
