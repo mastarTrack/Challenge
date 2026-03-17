@@ -7,9 +7,29 @@
 
 import Foundation
 
+extension SearchSection: SectionHeader {}
+
 enum SearchSection: Int, CaseIterable {
     case podcast
     case music
+    
+    var title: String {
+        switch self {
+        case .podcast:
+            return "Podcast"
+        case .music:
+            return "Music"
+        }
+    }
+    
+    var subTitle: String {
+        switch self {
+        case .podcast:
+            return "Podcast 검색 결과"
+        case .music:
+            return "Music 검색 결과"
+        }
+    }
     
     var layout: SearchLayout{
         switch self {

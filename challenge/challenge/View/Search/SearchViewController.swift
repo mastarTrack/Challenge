@@ -76,6 +76,12 @@ extension SearchViewController {
                 return cell
             }
         }
+        dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
+            guard let section = SearchSection(rawValue: indexPath.section) else { return UICollectionViewCell() }
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeaderView.id, for: indexPath) as? SectionHeaderView else { return UICollectionViewCell() }
+            header.config(section: section)
+            return header
+        }
     }
 }
 
