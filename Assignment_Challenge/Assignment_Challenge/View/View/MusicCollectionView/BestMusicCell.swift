@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 final class BestMusicCell: UICollectionViewCell {
     static let id = "BestMusicCell"
@@ -39,19 +40,20 @@ final class BestMusicCell: UICollectionViewCell {
         
         noteView.backgroundColor = randomBrightColor()
         
-        albumImageView.image = noteImage
+        titleLabel.font = .boldSystemFont(ofSize: 14)
+        
+        artistLabel.font = .systemFont(ofSize: 12, weight: .medium)
+        artistLabel.textColor = .secondaryLabel
+        
         albumImageView.contentMode = .center
         albumImageView.backgroundColor = .systemGray4
         albumImageView.layer.cornerRadius = 10
         albumImageView.clipsToBounds = true
         albumImageView.snp.makeConstraints {
-            $0.width.height.equalTo(30)
+            $0.width.height.equalTo(35)
         }
         
-        titleLabel.font = .boldSystemFont(ofSize: 14)
-        
-        artistLabel.font = .systemFont(ofSize: 12, weight: .medium)
-        artistLabel.textColor = .secondaryLabel
+        albumImageView.kf.indicatorType = .activity // 이미지를 가져오는 동안 애니메이션 표출 옵션
     }
     
     private func setLayout() {
@@ -96,9 +98,9 @@ final class BestMusicCell: UICollectionViewCell {
 
 extension BestMusicCell {
     func configure(with music: Music) {
-//        albumImage.image = UIImage
         titleLabel.text = music.title
         artistLabel.text = music.artist
+        albumImageView.setImage(with: music.artworkUrl60 ?? "")
     }
 }
 

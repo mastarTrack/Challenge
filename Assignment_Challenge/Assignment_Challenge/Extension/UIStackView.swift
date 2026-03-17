@@ -14,7 +14,7 @@ extension UIStackView {
         views.forEach { addArrangedSubview($0) }
         axis = .vertical
         alignment = .leading
-        spacing = 5
+        spacing = 4
     }
     
     // 곡 정보 스택(가로) 생성용

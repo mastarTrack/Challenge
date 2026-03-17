@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 final class MusicCell: UICollectionViewCell {
     static let id = "MusicListCell"
@@ -28,14 +29,14 @@ final class MusicCell: UICollectionViewCell {
     }
     
     private func setAttributes() {
-        let config = UIImage.SymbolConfiguration(hierarchicalColor: .secondaryWhite)
-        albumImageView.image = UIImage(systemName: "music.note", withConfiguration: config) // 이미지 기본값 - 음표 이미지
+        albumImageView.kf.indicatorType = .activity
         albumImageView.contentMode = .center
         albumImageView.backgroundColor = .systemGray4
         albumImageView.layer.cornerRadius = 10
         albumImageView.clipsToBounds = true
         
         titleLabel.font = .boldSystemFont(ofSize: 16)
+        titleLabel.numberOfLines = 1
 
         artistLabel.font = .systemFont(ofSize: 14, weight: .medium)
         
@@ -52,13 +53,13 @@ final class MusicCell: UICollectionViewCell {
         albumImageView.snp.makeConstraints {
             $0.width.height.equalTo(60)
             $0.top.bottom.equalToSuperview().inset(10)
-//            $0.leading.equalToSuperview().inset(20)
             $0.leading.equalToSuperview()
         }
         
         songLabelStack.snp.makeConstraints {
             $0.centerY.equalTo(albumImageView)
             $0.leading.equalTo(albumImageView.snp.trailing).offset(10)
+            $0.trailing.equalToSuperview().inset(20)
         }
     }
 }
@@ -68,5 +69,6 @@ extension MusicCell {
         titleLabel.text = music.title
         artistLabel.text = music.artist
         collectionLabel.text = music.collection
+        albumImageView.setImage(with: music.artworkUrl60 ?? "")
     }
 }
