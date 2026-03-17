@@ -39,7 +39,7 @@ extension HomeView {
 extension HomeView {
     private func createLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
-            let section = Section(rawValue: sectionIndex )
+            let section = HomeSection(rawValue: sectionIndex )
             return section?.layout == .card ? self.createCardLayout() : self.createListLayout()
         }
     }

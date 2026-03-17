@@ -8,25 +8,6 @@
 import UIKit
 import SnapKit
 
-enum SearchSection: Int, CaseIterable {
-    case podcast
-    case music
-    
-    var layout: SearchLayout{
-        switch self {
-        case .podcast:
-            return .poster
-        case .music:
-            return .list
-        }
-    }
-}
-
-enum SearchLayout {
-    case poster
-    case list
-}
-
 class SearchView: UIView {
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())

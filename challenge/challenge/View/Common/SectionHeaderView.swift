@@ -49,7 +49,7 @@ extension SectionHeaderView {
 }
 
 extension SectionHeaderView {
-    func config(section: Section) {
+    func config(section: HomeSection) {
         titleLabel.text = section.title
         subTitleLabel.text = section.subTitle
     }

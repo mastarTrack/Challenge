@@ -18,7 +18,7 @@ class HomeViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    private var dataSource: UICollectionViewDiffableDataSource<Section, Music>!
+    private var dataSource: UICollectionViewDiffableDataSource<HomeSection, Music>!
     
     override func loadView() {
         self.view = homeView
@@ -52,7 +52,7 @@ extension HomeViewController {
     }
     
     private func setSnapshot(sections: [MusicSection]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Music>()
+        var snapshot = NSDiffableDataSourceSnapshot<HomeSection, Music>()
         sections.forEach { // 순회하여 Section 생성, item 넣기
             snapshot.appendSections([$0.section])
             snapshot.appendItems($0.items, toSection: $0.section)
@@ -79,7 +79,7 @@ extension HomeViewController {
         dataSource = UICollectionViewDiffableDataSource(
             collectionView: homeView.collectionView
         ) { collectionView, indexPath, music in
-            guard let section = Section(rawValue: indexPath.section) else { return UICollectionViewCell() }
+            guard let section = HomeSection(rawValue: indexPath.section) else { return UICollectionViewCell() }
             switch section {
             case .spring:
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCell.id, for: indexPath) as? CardCell else { return UICollectionViewCell() }
@@ -92,7 +92,7 @@ extension HomeViewController {
             }
         }
         dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
-            guard let section = Section(rawValue: indexPath.section) else { return UICollectionReusableView() }
+            guard let section = HomeSection(rawValue: indexPath.section) else { return UICollectionReusableView() }
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeaderView.id, for: indexPath) as? SectionHeaderView else { return UICollectionReusableView() }
             header.config(section: section)
             return header

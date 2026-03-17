@@ -32,7 +32,7 @@ class HomeViewModel: ViewModel {
     
     private func fetchAllSections() -> Observable<[MusicSection]> {
         // Section 정보용 pairs 생성(Section 정보, term 정보)
-        let sectionInfo: [(Section, String)] = [
+        let sectionInfo: [(HomeSection, String)] = [
             (.spring, "봄"),
             (.summer, "여름"),
             (.autumn, "가을"),
