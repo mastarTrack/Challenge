@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-//TODO: 1. DiffableDataSource 생성
+//TODO: 1. DiffableDataSource 생성, 2. Error 발생 시 print -> Alert로 변경
 
 class HomeViewController: UIViewController {
     
@@ -44,16 +44,9 @@ extension HomeViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] sections in
                 self?.setSnapshot(sections: sections)
-            }, onError: { error in
+            }, onError: { [weak self] error in
                 guard let error = error as? NetworkError else { return }
-                switch error {
-                case .requestError:
-                    print("요청 에러")
-                case .responseError:
-                    print("응답 에러")
-                case .decodingError:
-                    print("디코딩 에러")
-                }
+                self?.showErrorAlert(error: error)
             }).disposed(by: disposeBag)
     }
     
@@ -103,5 +96,25 @@ extension HomeViewController {
             header.config(section: section)
             return header
         }
+    }
+}
+
+extension HomeViewController {
+    private func showErrorAlert(error: NetworkError) {
+        
+        let message: String
+        
+        switch error {
+        case .requestError:
+            message = "요청 에러"
+        case .responseError:
+            message = "서버 에러"
+        case .decodingError:
+            message = "디코딩 에러"
+        }
+        
+        let alert = UIAlertController(title: "오류", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .cancel))
+        present(alert, animated: true)
     }
 }

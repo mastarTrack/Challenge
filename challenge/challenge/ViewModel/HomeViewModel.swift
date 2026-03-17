@@ -5,7 +5,7 @@
 //  Created by 손영빈 on 3/16/26.
 //
 
-//TODO: 1. List 묶어서 한번에 처리하는 방법, 2. Error 발생 시 print -> Alert로 변경
+//TODO: 1. List 묶어서 한번에 처리하는 방법
 
 import Foundation
 import RxSwift
