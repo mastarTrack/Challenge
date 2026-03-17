@@ -26,7 +26,7 @@ class SearchViewModel: ViewModel {
         
         let podcast = searchText
             .flatMap { term -> Observable<[Podcast]> in
-                guard let url = NetworkManager.shared.url(term: term, media: "podcast") else { return .just([]) }
+                guard let url = NetworkManager.shared.url(term: term, media: "podcast") else { return .error(NetworkError.requestError) }
                 return NetworkManager.shared.fetch(url: url)
                     .map { (response: PodcastResponse) in response.results }
                     .asObservable()
@@ -35,7 +35,7 @@ class SearchViewModel: ViewModel {
         
         let music = searchText
             .flatMap { term -> Observable<[Music]> in
-                guard let url = NetworkManager.shared.url(term: term, media: "music") else { return .just([]) }
+                guard let url = NetworkManager.shared.url(term: term, media: "music") else { return .error(NetworkError.requestError) }
                 return NetworkManager.shared.fetch(url: url)
                     .map { (response: MusicResponse) in response.results }
                     .asObservable()

@@ -36,6 +36,9 @@ extension SearchViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] podcast, music in
                 self?.setSnapshot(posdcast: podcast, music: music)
+            }, onError: { [weak self] error in
+                guard let error = error as? NetworkError else { return }
+                self?.showErrorAlert(error: error)
             }).disposed(by: disposeBag)
     }
     
@@ -77,8 +80,8 @@ extension SearchViewController {
             }
         }
         dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
-            guard let section = SearchSection(rawValue: indexPath.section) else { return UICollectionViewCell() }
-            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeaderView.id, for: indexPath) as? SectionHeaderView else { return UICollectionViewCell() }
+            guard let section = SearchSection(rawValue: indexPath.section) else { return UICollectionReusableView() }
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeaderView.id, for: indexPath) as? SectionHeaderView else { return UICollectionReusableView() }
             header.config(section: section)
             return header
         }
