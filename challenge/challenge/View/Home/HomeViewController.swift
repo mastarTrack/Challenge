@@ -127,5 +127,8 @@ extension HomeViewController {
         searchController.searchBar.placeholder = "음악, 팟캐스트"
         navigationItem.searchController = searchController
         
+        let searchText = searchController.searchBar.rx.text.orEmpty.asObservable()
+        searchVC.bind(searchText: searchText)
+        
     }
 }
