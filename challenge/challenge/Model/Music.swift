@@ -18,3 +18,8 @@ struct Music: Codable, Hashable {
     let artworkUrl60: String? // 앨범커버
     let artworkUrl100: String?
 }
+
+struct MusicSection {
+    let section: Section
+    let items: [Music]
+}

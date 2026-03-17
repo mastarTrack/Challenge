@@ -26,7 +26,6 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.fetchAllMusicList()
         setDelegate()
         configDataSource()
         bind()
@@ -35,26 +34,35 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController {
     private func bind() {
-        Observable.merge(
-            viewModel.springList.asObservable(),
-            viewModel.summerList.asObservable(),
-            viewModel.autumnList.asObservable(),
-            viewModel.winterList.asObservable()
-        )
-        .observe(on: MainScheduler.instance)
-        .subscribe(onNext: { [weak self] _ in
-            self?.setSnapshot()
-        }).disposed(by: disposeBag)
+        // 파이프 설계
+        let input = HomeViewModel.Input(initialized: Observable.just(()))
+        // 파이프 연결(transform 내부 initialized -> Output 반환)
+        let output = viewModel.transform(input: input)
+        
+        // Output 파이프 구독 (값 반환 시 setSnapshot 실행)
+        output.musicInfo
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] sections in
+                self?.setSnapshot(sections: sections)
+            }, onError: { error in
+                guard let error = error as? NetworkError else { return }
+                switch error {
+                case .requestError:
+                    print("요청 에러")
+                case .responseError:
+                    print("응답 에러")
+                case .decodingError:
+                    print("디코딩 에러")
+                }
+            }).disposed(by: disposeBag)
     }
     
-    private func setSnapshot() {
+    private func setSnapshot(sections: [MusicSection]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Music>()
-        snapshot.appendSections(Section.allCases)
-        snapshot.appendItems(viewModel.springList.value, toSection: .spring)
-        snapshot.appendItems(viewModel.summerList.value, toSection: .summer)
-        snapshot.appendItems(viewModel.autumnList.value, toSection: .autumn)
-        snapshot.appendItems(viewModel.winterList.value, toSection: .winter)
-        
+        sections.forEach { // 순회하여 Section 생성, item 넣기
+            snapshot.appendSections([$0.section])
+            snapshot.appendItems($0.items, toSection: $0.section)
+        }
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 }

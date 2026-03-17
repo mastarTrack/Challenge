@@ -9,40 +9,43 @@
 
 import Foundation
 import RxSwift
-import RxRelay
 
-class HomeViewModel {
+class HomeViewModel: ViewModel {
     private let disposeBag = DisposeBag()
     
-    let springList = BehaviorRelay<[Music]>(value: [])
-    let summerList = BehaviorRelay<[Music]>(value: [])
-    let autumnList = BehaviorRelay<[Music]>(value: [])
-    let winterList = BehaviorRelay<[Music]>(value: [])
-    
-    private func fetchMusicList(term: String, relay: BehaviorRelay<[Music]>) {
-        guard let url = API.music(term: term, media: "music").url else { return }
-        
-        NetworkManager.shared.fetch(url: url)
-            .subscribe(onSuccess: { (response: MusicResponse) in
-                relay.accept(response.results)
-            }, onFailure: { error in
-                if let error = error as? NetworkError {
-                    switch error {
-                    case .requestError:
-                        print("요청 에러")
-                    case .responseError:
-                        print("응답 에러")
-                    case .decodingError:
-                        print("디코딩 에러")
-                    }
-                }
-            }).disposed(by: disposeBag)
+    struct Input {
+        let initialized: Observable<Void>
     }
     
-    func fetchAllMusicList() {
-        fetchMusicList(term: "봄", relay: springList)
-        fetchMusicList(term: "여름", relay: summerList)
-        fetchMusicList(term: "가을", relay: autumnList)
-        fetchMusicList(term: "겨울", relay: winterList)
+    struct Output {
+        let musicInfo: Observable<[MusicSection]>
+    }
+    
+    func transform(input: Input) -> Output {
+        let musicInfo = input.initialized // 초기화 이벤트 시
+            .flatMap { [weak self] _ -> Observable<[MusicSection]> in // Observable로 반환
+                guard let self else { return .error(NetworkError.requestError) }
+                return self.fetchAllSections() // fetchAllSections 결과
+            }
+        return Output(musicInfo: musicInfo)
+    }
+    
+    private func fetchAllSections() -> Observable<[MusicSection]> {
+        // Section 정보용 pairs 생성(Section 정보, term 정보)
+        let sectionInfo: [(Section, String)] = [
+            (.spring, "봄"),
+            (.summer, "여름"),
+            (.autumn, "가을"),
+            (.winter, "겨울")
+        ]
+        // URL 생성 (compactMap으로 생성 실패 시 처리)
+        let observable = sectionInfo.compactMap { section, term -> Observable<MusicSection>? in
+            guard let url = API.music(term: term, media: "music").url else { return nil }
+            return NetworkManager.shared.fetch(url: url)
+                .map { (response: MusicResponse) in // MusicResponse -> MusicSection으로 반환
+                    MusicSection(section: section, items: response.results)
+                }.asObservable()
+        }
+        return Observable.zip(observable) // 묶어서 반환
     }
 }
