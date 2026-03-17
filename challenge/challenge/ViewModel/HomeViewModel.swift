@@ -40,7 +40,7 @@ class HomeViewModel: ViewModel {
         ]
         // URL 생성 (compactMap으로 생성 실패 시 처리)
         let observable = sectionInfo.compactMap { section, term -> Observable<MusicSection>? in
-            guard let url = API.music(term: term, media: "music").url else { return nil }
+            guard let url = NetworkManager.shared.url(term: term, media: "music") else { return nil }
             return NetworkManager.shared.fetch(url: url)
                 .map { (response: MusicResponse) in // MusicResponse -> MusicSection으로 반환
                     MusicSection(section: section, items: response.results)

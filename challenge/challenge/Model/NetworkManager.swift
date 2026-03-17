@@ -19,6 +19,15 @@ class NetworkManager {
     
     private init() {}
     
+    func url(term: String, media: String) -> URL? {
+        var componenets = URLComponents(string: "https://itunes.apple.com/search")
+        componenets?.queryItems = [
+            URLQueryItem(name: "term", value: term),
+            URLQueryItem(name: "media", value: media)
+        ]
+        return componenets?.url
+    }
+    
     func fetch<T: Decodable>(url: URL) -> Single<T> {
         return Single.create { observer in
             let request = URLRequest(url: url)
