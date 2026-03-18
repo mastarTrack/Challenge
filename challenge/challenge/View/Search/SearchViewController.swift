@@ -55,16 +55,12 @@ extension SearchViewController {
     private func setSnapshot(podcast: [Podcast], music: [Music]) {
         var snapshot = NSDiffableDataSourceSnapshot<SearchSection, SearchItem>()
         
-        if !podcast.isEmpty {
-            snapshot.appendSections([(.podcast)])
+        if !podcast.isEmpty || !music.isEmpty {
+            snapshot.appendSections(SearchSection.allCases)
             snapshot.appendItems(podcast.map { .podcast($0) }, toSection: .podcast)
-        }
-        
-        if !music.isEmpty {
-            snapshot.appendSections([(.music)])
             snapshot.appendItems(music.map { .music($0) }, toSection: .music)
+            
         }
-        
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 }
