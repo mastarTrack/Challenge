@@ -36,8 +36,11 @@ extension SearchViewController {
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] podcast, music in
                 self?.setSnapshot(posdcast: podcast, music: music)
-            }, onError: { [weak self] error in
-                guard let error = error as? NetworkError else { return }
+            }).disposed(by: disposeBag)
+        
+        output.error
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] error in
                 self?.showErrorAlert(error: error)
             }).disposed(by: disposeBag)
     }
