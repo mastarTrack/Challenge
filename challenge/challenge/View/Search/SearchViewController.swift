@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 class SearchViewController: UIViewController {
     
@@ -35,8 +36,14 @@ extension SearchViewController {
         output.searchResult
             .observe(on: MainScheduler.instance)
             .subscribe(onNext: { [weak self] podcast, music in
-                self?.setSnapshot(posdcast: podcast, music: music)
+                self?.setSnapshot(podcast: podcast, music: music)
             }).disposed(by: disposeBag)
+        
+        output.searchResult
+            .map { podcast, music in !(podcast.isEmpty && music.isEmpty) }
+            .observe(on: MainScheduler.instance)
+            .bind(to: searchView.collectionView.backgroundView!.rx.isHidden)
+            .disposed(by: disposeBag)
         
         output.error
             .observe(on: MainScheduler.instance)
@@ -45,12 +52,19 @@ extension SearchViewController {
             }).disposed(by: disposeBag)
     }
     
-    private func setSnapshot(posdcast: [Podcast], music: [Music]) {
+    private func setSnapshot(podcast: [Podcast], music: [Music]) {
         var snapshot = NSDiffableDataSourceSnapshot<SearchSection, SearchItem>()
         
-        snapshot.appendSections(SearchSection.allCases)
-        snapshot.appendItems(posdcast.map { .podcast($0) }, toSection: .podcast)
-        snapshot.appendItems(music.map { .music($0) }, toSection: .music)
+        if !podcast.isEmpty {
+            snapshot.appendSections([(.podcast)])
+            snapshot.appendItems(podcast.map { .podcast($0) }, toSection: .podcast)
+        }
+        
+        if !music.isEmpty {
+            snapshot.appendSections([(.music)])
+            snapshot.appendItems(music.map { .music($0) }, toSection: .music)
+        }
+        
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 }

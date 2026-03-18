@@ -12,6 +12,8 @@ class SearchView: UIView {
     
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
     
+    let emptyLabel = UILabel()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setAttributes()
@@ -26,6 +28,12 @@ class SearchView: UIView {
 extension SearchView {
     private func setAttributes() {
         self.backgroundColor = .systemBackground
+        
+        emptyLabel.text = "검색 결과가 없습니다."
+        emptyLabel.textAlignment = .center
+        emptyLabel.textColor = .secondaryLabel
+        self.collectionView.backgroundView = emptyLabel
+        self.collectionView.backgroundView?.isHidden = true
     }
     
     private func setLayout() {
