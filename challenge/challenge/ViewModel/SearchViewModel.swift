@@ -38,7 +38,7 @@ class SearchViewModel: ViewModel {
     private func search<T: Codable>(searchText: Observable<String>, media: String) -> Observable<[T]> {
         searchText.flatMap { [weak self] term -> Observable<[T]> in
             guard let self else { return .just([])}
-            guard let url = NetworkManager.shared.url(term: term, media: "podcast") else {
+            guard let url = NetworkManager.shared.url(term: term, media: media) else {
                 self.errorSubject.onNext(.requestError)
                 return .just([])
             }
