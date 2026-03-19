@@ -41,10 +41,15 @@ final class ResultViewController: UIViewController {
     private func bind() {
         let input = HomeViewModel.Input(
             fetchData: .empty(),
-            searchText: searchKeyword
+            searchText: searchKeyword,
+            playMusic: .empty()
         )
         
         let output = viewModel.transform(input)
+        
+        searchKeyword
+            .bind(to: resultView.rx.searchKeyword)
+            .disposed(by: disposeBag)
         
         let podcast = output.podcast
             .map { podcasts in

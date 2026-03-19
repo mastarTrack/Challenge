@@ -8,7 +8,7 @@ import UIKit
 import SnapKit
 
 final class HomeView: UIView {
-    private let collectionView = MusicCollectionView()
+    let collectionView = MusicCollectionView()
     private lazy var dataSource = makeCollectionViewDiffableDataSource(collectionView)
     
     override init(frame: CGRect) {
@@ -91,5 +91,10 @@ extension HomeView {
         snapshot.appendItems(data[MusicCollectionView.Section.winter.rawValue], toSection: .winter)
  
         dataSource.apply(snapshot)
+    }
+    
+    func fetchItem(of indexPath: IndexPath) -> MusicCollectionView.Item? {
+        let item = dataSource.itemIdentifier(for: indexPath)
+        return item
     }
 }

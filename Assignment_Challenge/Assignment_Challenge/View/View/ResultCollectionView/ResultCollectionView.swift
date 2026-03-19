@@ -9,6 +9,11 @@ import UIKit
 
 final class ResultCollectionView: UICollectionView {
     nonisolated
+    enum Section: Hashable {
+        case result(String)
+    }
+    
+    nonisolated
     enum Item: Hashable {
         case podcast(Podcast)
         case tvShow(TvShow)
@@ -41,6 +46,15 @@ extension ResultCollectionView {
         
         return UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex, environment in
             
+            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(45)
+                ),
+                elementKind: "HeaderKind",
+                alignment: .top
+            )
+            
             let itemWidth = environment.container.effectiveContentSize.width
             
             let item = NSCollectionLayoutItem(
@@ -60,7 +74,7 @@ extension ResultCollectionView {
             
             let section = NSCollectionLayoutSection(group: group)
             section.interGroupSpacing = 20
-//            section.orthogonalScrollingBehavior = .continuous
+            section.boundarySupplementaryItems = [headerItem]
             
             return section
         }, configuration: configuration)

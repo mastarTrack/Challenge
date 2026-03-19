@@ -17,8 +17,9 @@ extension UIImageView {
         let retry = DelayRetryStrategy(maxRetryCount: 1, retryInterval: .seconds(3)) // 이미지 다운로드 실패 시 재실행 -- 3초 뒤 1번 재실행
         let placeholder = UIImage(systemName: "photo.trianglebadge.exclamationmark") // 이미지 로딩 실패 시 기본값
         let options: KingfisherOptionsInfo = [
+            .backgroundDecode, // background 스레드에서 이미지 디코딩
             .retryStrategy(retry), // 재시도
-            .transition(.fade(1.2)), // 1.2초 내에 이미지를 가져오지 못하면 애니메이션 표출
+            .transition(.fade(1)), // 새 이미지 로드 시 1초동안 fade 애니메이션 적용
             .cacheOriginalImage // 원본 이미지 캐싱
         ]
         let url = URL(string: urlString)

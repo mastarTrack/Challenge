@@ -23,6 +23,12 @@ final class ResultCardCell: UICollectionViewCell {
         setLayout()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        artworkImageView.kf.cancelDownloadTask()
+        artworkImageView.image = nil
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

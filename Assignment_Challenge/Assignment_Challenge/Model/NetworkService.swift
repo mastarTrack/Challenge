@@ -10,6 +10,8 @@ import RxSwift
 
 enum NetworkError: Error {
     case invalidURL
+    case failedToFetchData
+    case emptyData
 }
 
 final class NetworkService {
@@ -105,7 +107,7 @@ extension Reactive where Base: NetworkService {
             
             return Disposables.create {
                 task.cancel() // 구독이 dispose될 때 진행중인 task를 cancel
-
+                AF.cancelAllRequests() // Alamofire DataRequest cancel
             }
         }
     }
@@ -124,6 +126,7 @@ extension Reactive where Base: NetworkService {
             
             return Disposables.create {
                 task.cancel() // 구독이 dispose될 때 진행중인 task를 cancel
+                AF.cancelAllRequests() // Alamofire DataRequest cancel
             }
         }
     }
@@ -142,6 +145,7 @@ extension Reactive where Base: NetworkService {
             
             return Disposables.create {
                 task.cancel() // 구독이 dispose될 때 진행중인 task를 cancel
+                AF.cancelAllRequests() // Alamofire DataRequest cancel
             }
         }
     }
