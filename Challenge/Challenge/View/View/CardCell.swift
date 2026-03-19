@@ -14,7 +14,7 @@ import Kingfisher
 class CardCell: UICollectionViewCell {
     
     //MARK: - Properties
-    static let cardCellIdentifier = "CardCell"
+    static let id = "CardCell"
         
     //MARK: - Components
     private let imageView = UIImageView().then {

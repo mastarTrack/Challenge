@@ -21,8 +21,8 @@ class MainViewController: UIViewController {
     
     //MARK: - Components
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-    
-    let searchController = UISearchController(searchResultsController: nil)
+        
+    lazy var searchController = UISearchController(searchResultsController: SearchResultViewController(vm: SearchResultViewModel()))
     
     private var dataSource: UICollectionViewDiffableDataSource<SeasonKeyword, Music>!
     
@@ -34,6 +34,7 @@ class MainViewController: UIViewController {
         configureUI()
         configureDataSource()
         bind()
+        bindToSearch()
     }
     
     init() {
@@ -65,14 +66,16 @@ extension MainViewController {
         ).disposed(by: disposeBag)
     }
     
-}
-
-//MARK: - Search Controller
-extension MainViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
+    func bindToSearch() {
+        guard let searchVC = searchController.searchResultsController as? SearchResultViewController else { return }
         
+        searchController.searchBar.rx.text.orEmpty
+            .distinctUntilChanged()
+            .bind(to: searchVC.searchRelay)
+            .disposed(by: disposeBag)
     }
 }
+
 
 //MARK: - CollectionView
 extension MainViewController {
@@ -101,13 +104,13 @@ extension MainViewController {
                 
                 switch sectionType {
                 case .spring, .autumn:
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCell.cardCellIdentifier, for: indexPath) as? CardCell else {
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCell.id, for: indexPath) as? CardCell else {
                         return UICollectionViewCell() }
                     cell.updateUI(music: item)
                     
                     return cell
                 case .summer, .winter:
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ListCell.listCellIdentifier, for: indexPath) as? ListCell else {
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ListCell.id, for: indexPath) as? ListCell else {
                         return UICollectionViewCell() }
                     cell.updateUI(music: item)
 
@@ -216,10 +219,16 @@ extension MainViewController {
     private func configureUI() {
         navigationItem.searchController = searchController
         navigationItem.preferredSearchBarPlacement = .stacked
-        searchController.searchResultsUpdater = self
         
-        collectionView.register(CardCell.self, forCellWithReuseIdentifier: CardCell.cardCellIdentifier)
-        collectionView.register(ListCell.self, forCellWithReuseIdentifier: ListCell.listCellIdentifier)
+        // 검색 활성화 시 뒤에 있던 기존 화면을 어둡게 가릴지 여부
+        searchController.obscuresBackgroundDuringPresentation = true
+        // 검색창 안에 회색 안내 문구 표시
+        searchController.searchBar.placeholder = "검색"
+        // SearchController의 표시 범위와 화면 전환을 관리하도록 설정
+        definesPresentationContext = true
+        
+        collectionView.register(CardCell.self, forCellWithReuseIdentifier: CardCell.id)
+        collectionView.register(ListCell.self, forCellWithReuseIdentifier: ListCell.id)
         collectionView.register(SectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeaderView.id)
         
         

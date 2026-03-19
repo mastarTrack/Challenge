@@ -14,7 +14,7 @@ import Kingfisher
 class ListCell: UICollectionViewCell {
     
     //MARK: - Properties
-    static let listCellIdentifier = "ListCell"
+    static let id = "ListCell"
         
     //MARK: - Components
     private let imageView = UIImageView().then {

@@ -23,6 +23,7 @@ enum SeasonKeyword: String, CaseIterable, Hashable {
 class MainViewModel {
     struct Input {
         let fetch: Observable<Void>
+        
     }
     
     struct Output {
