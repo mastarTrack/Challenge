@@ -55,3 +55,8 @@ enum LayoutType {
     case card
     case list
 }
+
+struct MusicSection {
+    let section: HomeSection
+    let items: [Music]
+}
