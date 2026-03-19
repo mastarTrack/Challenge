@@ -155,7 +155,7 @@ final class SearchViewController: UIViewController, View {
             // 섹션 0 == 뮤직 비디오
             if sectionIndex == 0 {
                 
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(63))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.55))
@@ -176,7 +176,7 @@ final class SearchViewController: UIViewController, View {
                 
                 // 2. Group
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.85), heightDimension: .absolute(190))
-                let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 3) // 한 그룹에 아이템 3개 세로 배치
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 3) // 한 그룹에 아이템 3개 세로 배치
                 
                 group.interItemSpacing = .fixed(0)
                 
@@ -316,8 +316,8 @@ final class SearchViewController: UIViewController, View {
                     // 재생 이미지
                     for cell in self.collectionView.visibleCells {
                         if let playableCell = cell as? PlayableUICell,
-                           let indexPath = self.collectionView.indexPath(for: cell),
-                           let item = self.dataSource[indexPath] as? ContentItem {
+                           let indexPath = self.collectionView.indexPath(for: cell) {
+                           let item = self.dataSource[indexPath]
                             
                             let isPlaying = (item.previewURL == playingURL)
                             playableCell.updatePlayUI(isPlaying: isPlaying)

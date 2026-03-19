@@ -102,13 +102,13 @@ final class HomeViewController: UIViewController, View {
             if sectionIndex == 0 {
                 
                 // 1. Item
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0)
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(63)
                 ) // Group이 주는 공간에 Item을 100% 채움
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
                 // 2. Group
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.85), heightDimension: .absolute(190))
-                let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 3) // 한 그룹에 아이템 3개 세로 배치
+                let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 3) // 한 그룹에 아이템 3개 세로 배치
                 
                 group.interItemSpacing = .fixed(0)
                 
@@ -303,8 +303,8 @@ final class HomeViewController: UIViewController, View {
                     // 재생 이미지
                     for cell in self.collectionView.visibleCells {
                         if let playableCell = cell as? PlayableUICell,
-                           let indexPath = self.collectionView.indexPath(for: cell),
-                           let item = self.dataSource[indexPath] as? ContentItem {
+                           let indexPath = self.collectionView.indexPath(for: cell) {
+                           let item = self.dataSource[indexPath]
                             
                             let isPlaying = (item.previewURL == playingURL)
                             playableCell.updatePlayUI(isPlaying: isPlaying)
