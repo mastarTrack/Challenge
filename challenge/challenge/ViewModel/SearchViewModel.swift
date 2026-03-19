@@ -28,38 +28,27 @@ class SearchViewModel: ViewModel {
             .filter { !$0.isEmpty }
             .share()
         
-        let podcast = searchText
-            .flatMap { [weak self] term -> Observable<[Podcast]> in
-                guard let self else { return .just([] as [Podcast])}
-                guard let url = NetworkManager.shared.url(term: term, media: "podcast") else {
-                    self.errorSubject.onNext(.requestError)
-                    return .just([] as [Podcast])
-                }
-                return NetworkManager.shared.fetch(url: url)
-                    .map { (response: PodcastResponse) in response.results }
-                    .asObservable()
-                    .catch { [weak self] error in
-                        self?.errorSubject.onNext(error as! NetworkError)
-                        return .just([] as [Podcast])
-                    }
-            }
-        
-        let music = searchText
-            .flatMap { [weak self] term -> Observable<[Music]> in
-                guard let self else { return .just([] as [Music]) }
-                guard let url = NetworkManager.shared.url(term: term, media: "music") else {
-                    self.errorSubject.onNext(.requestError)
-                    return .just([] as [Music])}
-                return NetworkManager.shared.fetch(url: url)
-                    .map { (response: MusicResponse) in response.results }
-                    .asObservable()
-                    .catch { [weak self] error in
-                        self?.errorSubject.onNext(error as! NetworkError)
-                        return .just([] as [Music])
-                    }
-            }
-        let searchResult = Observable.zip(podcast, music)
+        let podcast: Observable<[Podcast]> = search(searchText: searchText, media: "podcast")
+        let music: Observable<[Music]> = search(searchText: searchText, media: "music")
+        let searchResult = Observable.zip(podcast, music).share()
         
         return Output(searchResult: searchResult, error: errorSubject.asObservable())
+    }
+    
+    private func search<T: Codable>(searchText: Observable<String>, media: String) -> Observable<[T]> {
+        searchText.flatMap { [weak self] term -> Observable<[T]> in
+            guard let self else { return .just([])}
+            guard let url = NetworkManager.shared.url(term: term, media: "podcast") else {
+                self.errorSubject.onNext(.requestError)
+                return .just([])
+            }
+            return NetworkManager.shared.fetch(url: url)
+                .map { (response: iTunesResponse<T>) in response.results }
+                .asObservable()
+                .catch { [weak self] error in
+                    self?.errorSubject.onNext(error as! NetworkError)
+                    return .just([])
+                }
+        }
     }
 }

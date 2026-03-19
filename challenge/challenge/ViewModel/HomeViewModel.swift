@@ -42,7 +42,7 @@ class HomeViewModel: ViewModel {
         let observable = sectionInfo.map { section, term -> Observable<MusicSection> in
             guard let url = NetworkManager.shared.url(term: term, media: "music") else { return .error(NetworkError.requestError) }
             return NetworkManager.shared.fetch(url: url)
-                .map { (response: MusicResponse) in // MusicResponse -> MusicSection으로 반환
+                .map { (response: iTunesResponse<Music>) in // MusicResponse -> MusicSection으로 반환
                     MusicSection(section: section, items: response.results)
                 }.asObservable()
         }
