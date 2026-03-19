@@ -32,15 +32,15 @@ class HomeViewModel: ViewModel {
     
     private func fetchAllSections() -> Observable<[MusicSection]> {
         // Section 정보용 pairs 생성(Section 정보, term 정보)
-        let sectionInfo: [(Section, String)] = [
+        let sectionInfo: [(HomeSection, String)] = [
             (.spring, "봄"),
             (.summer, "여름"),
             (.autumn, "가을"),
             (.winter, "겨울")
         ]
-        // URL 생성 (compactMap으로 생성 실패 시 처리)
-        let observable = sectionInfo.compactMap { section, term -> Observable<MusicSection>? in
-            guard let url = API.music(term: term, media: "music").url else { return nil }
+        // URL 생성 (map으로 생성 실패 시 처리)
+        let observable = sectionInfo.map { section, term -> Observable<MusicSection> in
+            guard let url = NetworkManager.shared.url(term: term, media: "music") else { return .error(NetworkError.requestError) }
             return NetworkManager.shared.fetch(url: url)
                 .map { (response: MusicResponse) in // MusicResponse -> MusicSection으로 반환
                     MusicSection(section: section, items: response.results)

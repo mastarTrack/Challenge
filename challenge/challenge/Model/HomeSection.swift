@@ -7,7 +7,9 @@
 
 import Foundation
 
-enum Section: Int, CaseIterable {
+extension HomeSection: SectionHeader {}
+
+enum HomeSection: Int, CaseIterable {
     case spring
     case summer
     case autumn

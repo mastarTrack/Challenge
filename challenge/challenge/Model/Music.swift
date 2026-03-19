@@ -20,6 +20,6 @@ struct Music: Codable, Hashable {
 }
 
 struct MusicSection {
-    let section: Section
+    let section: HomeSection
     let items: [Music]
 }

@@ -18,7 +18,7 @@ class HomeViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    private var dataSource: UICollectionViewDiffableDataSource<Section, Music>!
+    private var dataSource: UICollectionViewDiffableDataSource<HomeSection, Music>!
     
     override func loadView() {
         self.view = homeView
@@ -29,6 +29,7 @@ class HomeViewController: UIViewController {
         setDelegate()
         configDataSource()
         bind()
+        configSearchController()
     }
 }
 
@@ -51,7 +52,7 @@ extension HomeViewController {
     }
     
     private func setSnapshot(sections: [MusicSection]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Music>()
+        var snapshot = NSDiffableDataSourceSnapshot<HomeSection, Music>()
         sections.forEach { // 순회하여 Section 생성, item 넣기
             snapshot.appendSections([$0.section])
             snapshot.appendItems($0.items, toSection: $0.section)
@@ -78,7 +79,7 @@ extension HomeViewController {
         dataSource = UICollectionViewDiffableDataSource(
             collectionView: homeView.collectionView
         ) { collectionView, indexPath, music in
-            guard let section = Section(rawValue: indexPath.section) else { return UICollectionViewCell() }
+            guard let section = HomeSection(rawValue: indexPath.section) else { return UICollectionViewCell() }
             switch section {
             case .spring:
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CardCell.id, for: indexPath) as? CardCell else { return UICollectionViewCell() }
@@ -91,7 +92,7 @@ extension HomeViewController {
             }
         }
         dataSource.supplementaryViewProvider = { collectionView, kind, indexPath in
-            guard let section = Section(rawValue: indexPath.section) else { return UICollectionReusableView() }
+            guard let section = HomeSection(rawValue: indexPath.section) else { return UICollectionReusableView() }
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SectionHeaderView.id, for: indexPath) as? SectionHeaderView else { return UICollectionReusableView() }
             header.config(section: section)
             return header
@@ -116,5 +117,18 @@ extension HomeViewController {
         let alert = UIAlertController(title: "오류", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .cancel))
         present(alert, animated: true)
+    }
+}
+
+extension HomeViewController {
+    private func configSearchController() {
+        let searchVC = SearchViewController()
+        let searchController = UISearchController(searchResultsController: searchVC)
+        searchController.searchBar.placeholder = "음악, 팟캐스트"
+        navigationItem.searchController = searchController
+        
+        let searchText = searchController.searchBar.rx.text.orEmpty.asObservable()
+        searchVC.bind(searchText: searchText)
+        
     }
 }
