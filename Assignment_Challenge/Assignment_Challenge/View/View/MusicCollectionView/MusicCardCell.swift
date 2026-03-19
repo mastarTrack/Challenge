@@ -9,15 +9,15 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-final class BestMusicCell: UICollectionViewCell {
-    static let id = "BestMusicCell"
+final class MusicCardCell: UICollectionViewCell {
+    static let id = "MusicCardCell"
     
     let noteView = UIView()
     let albumImageView = UIImageView()
     let titleLabel = UILabel()
     let artistLabel = UILabel()
     
-    // 음표 이미지 - 이미지 기본값으로 사용
+    // 음표 이미지
     let noteImage: UIImage? = {
         let config = UIImage.SymbolConfiguration(hierarchicalColor: .secondaryWhite)
         return UIImage(systemName: "music.note", withConfiguration: config)
@@ -38,7 +38,7 @@ final class BestMusicCell: UICollectionViewCell {
         contentView.layer.cornerRadius = 10
         contentView.clipsToBounds = true
         
-        noteView.backgroundColor = randomBrightColor()
+        noteView.backgroundColor = UIColor.randomBright
         
         titleLabel.font = .boldSystemFont(ofSize: 14)
         
@@ -46,14 +46,11 @@ final class BestMusicCell: UICollectionViewCell {
         artistLabel.textColor = .secondaryLabel
         
         albumImageView.contentMode = .center
-        albumImageView.backgroundColor = .systemGray4
         albumImageView.layer.cornerRadius = 10
         albumImageView.clipsToBounds = true
         albumImageView.snp.makeConstraints {
             $0.width.height.equalTo(35)
         }
-        
-        albumImageView.kf.indicatorType = .activity // 이미지를 가져오는 동안 애니메이션 표출 옵션
     }
     
     private func setLayout() {
@@ -96,26 +93,10 @@ final class BestMusicCell: UICollectionViewCell {
     }
 }
 
-extension BestMusicCell {
+extension MusicCardCell {
     func configure(with music: Music) {
         titleLabel.text = music.title
         artistLabel.text = music.artist
         albumImageView.setImage(with: music.artworkUrl60 ?? "")
-    }
-}
-
-extension BestMusicCell {    
-    // 랜덤 컬러(밝은 색) 생성
-    private func randomBrightColor() -> UIColor {
-        let hue = CGFloat.random(in: 0...1)
-        let saturation = CGFloat.random(in: 0.4...0.8)
-        let brightness = CGFloat.random(in: 0.8...1.0)
-        
-        return UIColor(
-            hue: hue,
-            saturation: saturation,
-            brightness: brightness,
-            alpha: 1
-        )
     }
 }

@@ -60,28 +60,28 @@ class HomeViewController: UIViewController {
         let spring = output.spring
             .map { musics in
                 musics.map {
-                    Item.spring($0)
+                    MusicCollectionView.Item.spring($0)
                 }
             }
         
         let summer = output.summer
             .map { musics in
                 musics.map {
-                    Item.summer($0)
+                    MusicCollectionView.Item.summer($0)
                 }
             }
         
         let autumn = output.autumn
             .map { musics in
                 musics.map {
-                    Item.autumn($0)
+                    MusicCollectionView.Item.autumn($0)
                 }
             }
         
         let winter = output.winter
             .map { musics in
                 musics.map {
-                    Item.winter($0)
+                    MusicCollectionView.Item.winter($0)
                 }
             }
         
@@ -93,7 +93,7 @@ class HomeViewController: UIViewController {
                 homeView.setSnapshot(with: [$0, $1, $2, $3])
             },
                 onError: { [weak self] error in
-                    self?.showAlert(title: "Network Error", message: "데이터를 가져올 수 없습니다.\nError: \(error)")
+                    self?.showAlert(title: "Network Error", message: "데이터를 가져올 수 없습니다.\nError: \(error.localizedDescription)")
             })
             .disposed(by: disposeBag)
     }

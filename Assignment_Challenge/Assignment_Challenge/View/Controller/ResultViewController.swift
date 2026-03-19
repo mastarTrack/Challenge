@@ -13,13 +13,17 @@ final class ResultViewController: UIViewController {
     
     private let viewModel: HomeViewModel
     private let disposeBag = DisposeBag()
+    private let resultView = ResultView()
     
     private let searchKeyword: Observable<String>
+    
+    override func loadView() {
+        view = resultView
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
-        print("result view loaded")
     }
     
     //MARK: init
@@ -42,22 +46,43 @@ final class ResultViewController: UIViewController {
         
         let output = viewModel.transform(input)
         
-        output.tvShow
-            .subscribe(onNext: {
-                print($0)
-            }, onError: {
-                print($0)
-            })
-            .disposed(by: disposeBag)
+        let podcast = output.podcast
+            .map { podcasts in
+                podcasts.map {
+                    ResultCollectionView.Item.podcast($0)
+                }
+            }
+            .share()
         
-        output.podcast
-            .subscribe(onNext: {
-                print($0)
-            }, onError: {
-                print($0)
-            })
+        let tvShow = output.tvShow
+            .map { tvShows in
+                tvShows.map {
+                    ResultCollectionView.Item.tvShow($0)
+                }
+            }
+            .share()
+        
+        // 컬렉션뷰 바인딩
+        Observable
+            .combineLatest(podcast, tvShow)
+            .subscribe(
+                onNext: { [resultView] podcast, tvShow in
+                    let result = (podcast + tvShow).shuffled() // 랜덤 배열 생성
+                    resultView.setSnapshot(with: result)
+                },
+                onError: { [weak self] error in
+                    self?.showAlert(title: "Network Error", message: "데이터를 가져올 수 없습니다.\n\(error.localizedDescription)")
+                })
             .disposed(by: disposeBag)
     }
 
 }
 
+extension ResultViewController {
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .cancel))
+        
+        present(alert, animated: true)
+    }
+}

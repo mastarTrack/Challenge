@@ -33,7 +33,7 @@ extension HomeView {
         }
     }
     
-    private func convert(item: Item) -> Music {
+    private func convert(item: MusicCollectionView.Item) -> Music? {
         switch item {
         case let .spring(music):
             return music
@@ -49,23 +49,23 @@ extension HomeView {
 
 //MARK: CollectionView
 extension HomeView {
-    private func makeCollectionViewDiffableDataSource(_ collectionView: UICollectionView) -> UICollectionViewDiffableDataSource<Section, Item> {
+    private func makeCollectionViewDiffableDataSource(_ collectionView: UICollectionView) -> UICollectionViewDiffableDataSource<MusicCollectionView.Section, MusicCollectionView.Item> {
         let headerRegistration = UICollectionView.SupplementaryRegistration<MusicHeaderView>(elementKind: "HeaderKind") { supplementaryView, elementKind, indexPath in
-            supplementaryView.configure(with: Section(rawValue: indexPath.section) ?? Section.spring)
+            supplementaryView.configure(with: MusicCollectionView.Section(rawValue: indexPath.section) ?? MusicCollectionView.Section.spring)
         }
         
-        let bestMusicCellRegistration = UICollectionView.CellRegistration<BestMusicCell, Item> { [weak self] cell, indexPath, item in
+        let bestMusicCellRegistration = UICollectionView.CellRegistration<MusicCardCell, MusicCollectionView.Item> { [weak self] cell, indexPath, item in
             guard let music = self?.convert(item: item) else { return }
             cell.configure(with: music)
         }
         
-        let listMusicCellRegistration = UICollectionView.CellRegistration<MusicCell, Item> { [weak self] cell, indexPath, item in
+        let listMusicCellRegistration = UICollectionView.CellRegistration<MusicCell, MusicCollectionView.Item> { [weak self] cell, indexPath, item in
             guard let music = self?.convert(item: item) else { return }
             cell.configure(with: music)
         }
         
-        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
-            switch Section(rawValue: indexPath.section) {
+        let dataSource = UICollectionViewDiffableDataSource<MusicCollectionView.Section, MusicCollectionView.Item>(collectionView: collectionView) { collectionView, indexPath, item in
+            switch MusicCollectionView.Section(rawValue: indexPath.section) {
             case .spring:
                 return collectionView.dequeueConfiguredReusableCell(using: bestMusicCellRegistration, for: indexPath, item: item)
             default:
@@ -81,14 +81,14 @@ extension HomeView {
     }
     
     
-    func setSnapshot(with data: [[Item]]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+    func setSnapshot(with data: [[MusicCollectionView.Item]]) {
+        var snapshot = NSDiffableDataSourceSnapshot<MusicCollectionView.Section, MusicCollectionView.Item>()
         snapshot.appendSections([.spring, .summer, .autumn, .winter])
         
-        snapshot.appendItems(data[Section.spring.rawValue], toSection: .spring)
-        snapshot.appendItems(data[Section.summer.rawValue], toSection: .summer)
-        snapshot.appendItems(data[Section.autumn.rawValue], toSection: .autumn)
-        snapshot.appendItems(data[Section.winter.rawValue], toSection: .winter)
+        snapshot.appendItems(data[MusicCollectionView.Section.spring.rawValue], toSection: .spring)
+        snapshot.appendItems(data[MusicCollectionView.Section.summer.rawValue], toSection: .summer)
+        snapshot.appendItems(data[MusicCollectionView.Section.autumn.rawValue], toSection: .autumn)
+        snapshot.appendItems(data[MusicCollectionView.Section.winter.rawValue], toSection: .winter)
  
         dataSource.apply(snapshot)
     }

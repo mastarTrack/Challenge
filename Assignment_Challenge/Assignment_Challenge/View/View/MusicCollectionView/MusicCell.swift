@@ -29,9 +29,7 @@ final class MusicCell: UICollectionViewCell {
     }
     
     private func setAttributes() {
-        albumImageView.kf.indicatorType = .activity
         albumImageView.contentMode = .center
-        albumImageView.backgroundColor = .systemGray4
         albumImageView.layer.cornerRadius = 10
         albumImageView.clipsToBounds = true
         

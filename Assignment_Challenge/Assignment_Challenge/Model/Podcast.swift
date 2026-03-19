@@ -8,14 +8,15 @@
 nonisolated
 struct Podcast: Codable, Hashable {
     var trackId: Int
-    var kind: String // 종류 (podcast or tv-episode)
     
     var title: String // 팟캐스트 이름
     var artist: String // 아티스트
     
     var feedUrl: String? // 피드 상세내역
-    var artworkUrl100: String? = nil // 아트 사이즈 100
     var previewUrl: String? = nil // 프리뷰
+    var artworkUrl600: String? = nil // 아트 사이즈 600
+    var artworkUrl100: String? = nil // 아트 사이즈 100
+    
     
     var genre: String? // 장르
     
@@ -25,14 +26,15 @@ struct Podcast: Codable, Hashable {
     
     enum CodingKeys: String, CodingKey {
         case trackId
-        case kind
         
         case title = "trackName"
         case artist = "artistName"
         
         case feedUrl
-        case artworkUrl100
         case previewUrl
+        case artworkUrl100
+        case artworkUrl600
+        
         
         case genre = "primaryGenreName"
     }

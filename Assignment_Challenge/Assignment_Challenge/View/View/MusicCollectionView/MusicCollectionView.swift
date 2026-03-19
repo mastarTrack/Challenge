@@ -8,57 +8,57 @@
 import UIKit
 import SnapKit
 
-enum Section: Int {
-    case spring
-    case summer
-    case autumn
-    case winter
-    
-    var title: String {
-        switch self {
-        case .spring: "봄 Best"
-        case .summer: "여름"
-        case .autumn: "가을"
-        case .winter: "겨울"
-        }
-    }
-    
-    var secondaryTitle: String {
-        switch self {
-        case .spring: "봄에 어울리는 음악 Best 5"
-        case .summer: "여름에 어울리는 음악"
-        case .autumn: "가을에 어울리는 음악"
-        case .winter: "겨울에 어울리는 음악"
-        }
-    }
-}
-
-nonisolated
-enum Item: Hashable {
-    case spring(Music)
-    case summer(Music)
-    case autumn(Music)
-    case winter(Music)
-    
-    func hash(into hasher: inout Hasher) {
-        switch self {
-        case .spring(let music):
-            hasher.combine("spring")
-            hasher.combine(music)
-        case .summer(let music):
-            hasher.combine("summer")
-            hasher.combine(music)
-        case .autumn(let music):
-            hasher.combine("autumn")
-            hasher.combine(music)
-        case .winter(let music):
-            hasher.combine("winter")
-            hasher.combine(music)
-        }
-    }
-}
-
 final class MusicCollectionView: UICollectionView {
+    enum Section: Int {
+        case spring
+        case summer
+        case autumn
+        case winter
+        
+        var title: String {
+            switch self {
+            case .spring: "봄 Best"
+            case .summer: "여름"
+            case .autumn: "가을"
+            case .winter: "겨울"
+            }
+        }
+        
+        var secondaryTitle: String {
+            switch self {
+            case .spring: "봄에 어울리는 음악 Best 5"
+            case .summer: "여름에 어울리는 음악"
+            case .autumn: "가을에 어울리는 음악"
+            case .winter: "겨울에 어울리는 음악"
+            }
+        }
+    }
+    
+    nonisolated
+    enum Item: Hashable {
+        case spring(Music)
+        case summer(Music)
+        case autumn(Music)
+        case winter(Music)
+        
+        func hash(into hasher: inout Hasher) {
+            switch self {
+            case .spring(let music):
+                hasher.combine("spring")
+                hasher.combine(music)
+            case .summer(let music):
+                hasher.combine("summer")
+                hasher.combine(music)
+            case .autumn(let music):
+                hasher.combine("autumn")
+                hasher.combine(music)
+            case .winter(let music):
+                hasher.combine("winter")
+                hasher.combine(music)
+            }
+        }
+    }
+    
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: UICollectionViewLayout())
         collectionViewLayout = makeCompositionalLayout()

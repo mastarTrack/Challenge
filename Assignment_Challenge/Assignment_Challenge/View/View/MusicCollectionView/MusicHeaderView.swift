@@ -44,7 +44,7 @@ final class MusicHeaderView: UICollectionReusableView {
 }
 
 extension MusicHeaderView {
-    func configure(with section: Section) {
+    func configure(with section: MusicCollectionView.Section) {
         titleLabel.text = section.title
         secondaryLabel.text = section.secondaryTitle
     }
