@@ -8,17 +8,13 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-// 홈에 필요한 내용만 보낼 수 있도록
-// 접근제한자 적절히 쓰기
-
 // 한번에 가져와서 섹션별로 넣어주기 위해서 한번 담아줌
 struct HomeSectionModel {
     let type: HomeSection
     let items: [MusicItem]
 }
 
-final class HomeViewModel {
-    private let disposeBag = DisposeBag()
+final class HomeViewModel: ViewModelType {
     private let networkService: NetworkService
 
     init(networkService: NetworkService = NetworkManager()) {
@@ -54,7 +50,7 @@ final class HomeViewModel {
         // 최신 요청만 적절하게 처리하기 위해서 flatMapLatest
             .flatMapLatest { [weak self] _ -> Observable<[HomeSectionModel]> in
                 // 반환값으로 빈배열 가진 just로 하나 뱉음
-                guard let self else { return .just([])}
+                guard let self else { return .empty()}
                 
                 // fetchHomeSectionsData()는 Single<[HomeSectionModel]>를 반환 그래서 asObservable로 타입변환해줌
                 return self.fetchHomeSectionsData()
@@ -62,14 +58,13 @@ final class HomeViewModel {
                     .do(onNext: { _ in
                         loadingRelay.accept(false) // 로딩 상태를 바꾸어줌
                     })
-                    .catch { error in // 오류 잡기
-                        loadingRelay.accept(false)
-                        let message = self.makeErrorMessage(from: error)
-                        errorRelay.accept(message)
-                        return .just([])
-                    }
             }
-            .asDriver(onErrorJustReturn: [])
+            .asDriver(onErrorRecover: { error in // 오류 잡기
+                loadingRelay.accept(false)
+                let message = self.makeErrorMessage(from: error)
+                errorRelay.accept(message)
+                return .empty()
+            })
         // 성공시 나가는 반환타입은 Driver<[HomeSectionModel]>이기 떄문에 변환해줌
         // Driver는 오류는 못보내기 떄문에 여기서 오류시 어떤 값 내보낼지 정해야함)
         
